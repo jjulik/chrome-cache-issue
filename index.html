@@ -1,0 +1,58 @@
+<html>
+<head>
+	<title>Cache Test</title>
+	<script type="text/javascript">
+        (function() {
+			"use strict";
+
+			if (!!navigator.serviceWorker) {
+				navigator.serviceWorker.register('sw.js', {
+					scope: './'
+				}).then(function (registration) {
+					var serviceWorker;
+					if (registration.installing) {
+						serviceWorker = registration.installing;
+						document.querySelector('#status').textContent = 'installing';
+						navigator.serviceWorker.ready.then(function() {
+							document.querySelector('#status').textContent = "active";
+						});
+					} else if (registration.waiting) {
+						serviceWorker = registration.waiting;
+						document.querySelector('#status').textContent = 'waiting';
+					} else if (registration.active) {
+						serviceWorker = registration.active;
+						document.querySelector('#status').textContent = 'active';
+					}
+					if (serviceWorker) {
+						// logState(serviceWorker.state);
+						serviceWorker.addEventListener('statechange', function (e) {
+							console.log(e.target.state);
+							// logState(e.target.state);
+						});
+					}
+				}).catch(function (error) {
+					alert("The service worker is borked.");
+				});
+			} else {
+				alert("You are using a terrible browser. Please use a better one.");
+			}
+		})();
+    </script>
+<head>
+<body>
+	<h1>Cache Test</h1>
+	<p>The status of the service worker is: </p><p id="status"></p>
+	<a href="Page2.html">Go to page 2</a>
+	<div>
+		<h2>Instructions</h2>
+		<p>Clear all cache and history in your browser.</p>
+		<p>Navigate to this page.</p>
+		<p>Wait for the status of the service worker to change to active</p>
+		<p>Click go to page 2</p>
+		<p>Wait for the page to load</p>
+		<p>Close your browser</p>
+		<p>Open your browser</p>
+		<p>jquery.js is now missing from the Cache</p>
+	</div>
+<body>
+</html>
